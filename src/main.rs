@@ -1,39 +1,49 @@
-
+use std::io::{self, Write};
 use std::path::Path;
 use std::process::Command;
-use std::io::{self, Write};
 
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "nyan")]
 enum Opt {
-    Run {
-        runnable: String
-    }
+    Run { runnable: String },
 }
 
 fn run_npm() {
     let mut args = std::env::args();
     let mut command = std::process::Command::new("npm");
-    
+
     println!("npm lockfile detected.");
 
-    println!("LEN {:?}", args.len());
-
     if args.len() <= 1 {
-        command.arg("install").spawn().expect("Could not find npm binary").wait().ok();
+        command
+            .arg("install")
+            .spawn()
+            .expect("Could not find npm binary")
+            .wait()
+            .ok();
     }
-    
+
     let first_arg = args.nth(1).unwrap_or("".to_string());
     if first_arg == "i" || first_arg == "install" {
-        command.arg("install").spawn().expect("Could not find npm binary").wait().ok();
+        command
+            .arg("install")
+            .spawn()
+            .expect("Could not find npm binary")
+            .wait()
+            .ok();
     }
 
     if first_arg == "run" {
         let matches = Opt::from_args();
         println!("{:?}", matches);
-        command.args(args).spawn().expect("npm run failed.").wait().ok();
+        command
+            .args(args)
+            .spawn()
+            .expect("npm run failed.")
+            .wait()
+            .ok();
     }
 }
 
@@ -43,13 +53,22 @@ fn run_yarn() {
 
     println!("yarn lockfile detected.");
 
-    if (args.len() <= 1) {
-        command.spawn().expect("Could not find yarn binary.").wait().ok();
+    if args.len() <= 1 {
+        command
+            .spawn()
+            .expect("Could not find yarn binary.")
+            .wait()
+            .ok();
     }
 
     let first_arg = args.nth(1).unwrap_or("".to_string());
     if first_arg == "run" {
-        command.args(args).spawn().expect("Could not run command.").wait().ok();
+        command
+            .args(args)
+            .spawn()
+            .expect("Could not run command.")
+            .wait()
+            .ok();
     }
 }
 
